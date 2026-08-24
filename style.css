@@ -14,3 +14,27 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.container{
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+
+}
+
+header{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+h1{
+    font-size: 3.3rem;
+    margin-bottom: 5px;
+    background: linear-gradient(90deg, #0d5c5f, #11684e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
