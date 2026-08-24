@@ -19,7 +19,7 @@
                 <div class="album-art-container">
                     <div class="default-art" id="default-art">
                         <i class="fa-solid fa-music"></i>
-                        <p>Actual song thumbline will appear here</p>
+                        <p>Actual song thumbnail will appear here</p>
                     </div>
                     <img class="album-art" id="album-image" src="">
                 </div>
@@ -57,40 +57,33 @@
                         <i class="fa-solid fa-volume-high"></i>
                     </div>
                     <div class="volume-slider" id="volume-slider">
-                        <div class="volume-precent" id="volume-precent"></div>
+                        <div class="volume-percent" id="volume-percent"></div>
                     </div>
                 </div>
+            </div>
+            <div class="playlist-section">
+                <h2 class="section-title"><i class="fa-solid fa-list-ul"></i>Your Playlist</h2>
 
-                <div>
-                    <h2 class="section-title"><i class="fa-solid fa-list-ul"></i>Your Play</h2>
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <div class="upload-text">Upload Your Music files</div>
+                    <div class="upload-subtext">Click here or drag and drop Mp3 files with embeded album art</div>
+                    <button class="upload-btn" id="upload-btn">
+                        <i class="fa-solid fa-folder-open"></i> Choose Music Files
+                    </button>
+                    <input type="file" id="file-input" class="file-input" accept="audio/*" multiple>
                 </div>
+                <div class="playlist-header">
+                    <div class="tracks-count">Tracks: <span id="tracks-count">0</span></div>
+                    <button class="clear-btn" id="clear-btn">
+                        <i class="fa-solid fa-trash"></i> Clear All
+                    </button>
+                </div>
+                <ul class="playlist" id="playlist"></ul>
             </div>
         </div>
     </div>
-
-    <div class="playlist-section">
-        <h2 class="section-title"><i class="fa-solid fa-list-ul"></i>Your Playlist</h2>
-
-        <div class="upload-area" id="upload-area">
-            <div class="upload-icon">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-            </div>
-            <div class="upload-text">Upload Your Music files</div>
-            <div class="upload-subtext">Click here or drag and drop Mp3 files with embeded album art</div>
-            <button class="upload-btn" id="upload-btn">
-                <i class="fa-solid fa-folder-open"></i> Choose Music Files
-            </button>
-            <input type="file" id="file-input" accept="audio/*" multiple>
-        </div>
-
-        <div class="playlist-header">
-            <div class="tracks-count">Tracks: <span id="tracks-count">0</span></div>
-            <button class="clear-btn" id="clear-btn">
-                <i class="fa-solid fa-trash"></i> Clear All
-            </button>
-        </div>
-        <ul class="playlist" id="playlist"></ul>
-    </div>
-    
 </body>
 </html>
