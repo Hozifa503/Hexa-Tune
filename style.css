@@ -146,3 +146,10 @@ h1{
     transition: width 0.1s linear;
     background: linear-gradient(90deg, skyblue, lightgreen);
 }
+
+.timer {
+    display: flex;
+    justify-content: space-between;
+    color: skyblue;
+    font-size: 0.9rem;
+}
