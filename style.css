@@ -238,3 +238,62 @@ h1{
 .section-title i {
     color: skyblue;
 }
+
+.upload-area {
+    border: 2px  dashed rgba(0, 150, 255, 0.5);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    margin-bottom: 25px;
+    background: rgba(0, 153, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-area:hover {
+    background: rgba(0, 154, 255, 0.1);
+    border-color: lightblue;
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: skyblue;
+    margin-bottom: 15px;
+}
+
+.upload-text { 
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: aquamarine;
+}
+
+.upload-subtext {
+    color: whitesmoke;
+    font-size: 0.9rem;
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-btn {
+    background: linear-gradient(135deg, skyblue, lightgreen);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin-top: 10px;
+    align-items: center;
+    padding: 12px 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s;
+    display :inline-flex;
+    gap: 10px;
+}
+
+
+.upload-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 154, 255, 0.3);
+}
