@@ -187,3 +187,30 @@ h1{
 .play-pause:hover {
     transform: scale(1.1);
 }
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.volume-icon {
+    font-size: 1.5rem;
+    color: lightblue;
+}
+
+.volume-slider {
+    flex: 1;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.volume-percent {
+    height: 100%;
+    width: 70%;
+    background: linear-gradient(90deg, lightblue, lightgreen);
+    border-radius: 10px;
+}
