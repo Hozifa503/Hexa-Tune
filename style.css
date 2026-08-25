@@ -98,5 +98,30 @@ h1{
 .default-art i{
     font-size: 4rem;
     margin-bottom: 15px;
-    color: aqua;
+    color: skyblue;
+}
+
+.track-info{
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.track-title{
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    color: skyblue;
+    white-space: nowarp;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist{
+    font-size: 1.2rem;
+    color: aquamarine;
+}
+
+.track-album {
+    font-size: 1rem;
+    color: white;
+    margin-top: 5px;
 }
