@@ -81,3 +81,22 @@ h1{
 .album-art.active {
         display: block;
 }
+
+.default-art {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: aquamarine;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 20px;
+}
+
+.default-art i{
+    font-size: 4rem;
+    margin-bottom: 15px;
+    color: aqua;
+}
