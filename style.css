@@ -57,7 +57,7 @@ h1{
     background: rgba(10, 20, 35, 0.65);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 5px 15px rgba(0, 154, 255, 0.3);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(13, 92, 95, 0.4);
 }
@@ -213,4 +213,15 @@ h1{
     width: 70%;
     background: linear-gradient(90deg, lightblue, lightgreen);
     border-radius: 10px;
+}
+
+.playlist-section {
+    flex: 1;
+    max-width: 350px;
+    background: rgba(10, 20, 35, 0.65);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 154, 255, 0.3);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(13, 92, 95, 0.4);
 }
