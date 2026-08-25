@@ -225,3 +225,16 @@ h1{
     backdrop-filter: blur(12px);
     border: 1px solid rgba(13, 92, 95, 0.4);
 }
+
+.section-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    align-items: center;
+    color: white;
+    display: flex;
+    gap: 10px;
+}
+
+.section-title i {
+    color: skyblue;
+}
