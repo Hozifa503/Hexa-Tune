@@ -60,3 +60,24 @@ h1{
     backdrop-filter: blur(12px);
     border: 1px solid rgba(13, 92, 95, 0.4);
 }
+
+.album-art-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.album-art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+.album-art.active {
+        display: block;
+}
