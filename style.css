@@ -125,3 +125,24 @@ h1{
     color: white;
     margin-top: 5px;
 }
+
+.progress-area {
+    margin-bottom: 25px;
+}
+
+.progress-bar {
+    height: 6px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.1s linear;
+    background: linear-gradient(90deg, skyblue, lightgreen);
+}
