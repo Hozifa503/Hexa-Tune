@@ -32,7 +32,7 @@ header{
 h1{
     font-size: 3.3rem;
     margin-bottom: 5px;
-    background: linear-gradient(90deg, #0d5c5f, #11684e);
+    background: linear-gradient(90deg, skyblue, lightgreen);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -40,7 +40,7 @@ h1{
 }
 
 .subtitle {
-    color:bisque;
+    color: skyblue;
     font-size: 1.1rem;
 }
 
