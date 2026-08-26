@@ -297,3 +297,25 @@ h1{
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(0, 154, 255, 0.3);
 }
+
+.playlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.clear-btn {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    border-radius: 8px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.5s;
+}
+
+.clear-btn:hover {
+    background: rgba(255, 107, 107, 0.5);
+}
