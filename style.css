@@ -417,3 +417,21 @@ h1{
     color: #ff4757;
     transform: scale(1.2);
 }
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 154, 255, 0.9);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 154, 255, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    transform: translateY(100px);
+    transition: all 0.3s;    
+    opacity: 0;
+}
