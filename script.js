@@ -20,4 +20,14 @@ const clearBtn = document.getElementById('clear-btn');
 const playListEl = document.getElementById('playlist');
 const tracksCount = document.getElementById('tracks-count');
 const notification = document.getElementById('notification');
-const notificationText = document.getElementById('notification-text')
+const notificationText = document.getElementById('notification-text');
+
+const audio = new Audio();
+let isPlaying = false;
+let currentTrackIndex = -1;
+let playlist = [];
+
+let db;
+const DB_NAME = 'MusicPlayerDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'playlist'
