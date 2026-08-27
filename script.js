@@ -57,3 +57,32 @@ function initDB() {
         };
     });
 }
+
+async function savePlaylist() {
+    if(!db) return;
+    
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+
+        store.clear();
+
+        playlist.forEach((track, index) => {
+            if(track.thumbnail && track.thumbnail.startsWith('blob:')){
+                delete track.thumbnail;
+            }
+            store.put(track);
+        });
+
+        transaction.oncomplete = () => {
+            console.log('Playlist saved to IndexDB');
+            showNotification('Playlist saved successfully!');
+            resolve();
+        }
+
+        transaction.onerror = (event) => {
+            console.error('Error Saving Playlist', event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
