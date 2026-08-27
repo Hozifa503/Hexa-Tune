@@ -86,3 +86,25 @@ async function savePlaylist() {
         };
     });
 }
+
+async function loadPlaylist() {
+    if (!db) return [];
+
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.getAll();
+
+        request.onsuccess = (event) => {
+            const savedPlaylist = event.target.result;
+            console.log(`Loaded ${savedPlaylist.length} tracks from IndexedDB`);
+            resolve(savePlaylist);
+        };
+
+        request.onerror = (event) => {
+            console.error('Error loading playlist:', event.target.error);
+            reject(event.target.error);
+        };
+    });
+    
+}
