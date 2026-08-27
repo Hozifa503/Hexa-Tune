@@ -30,4 +30,30 @@ let playlist = [];
 let db;
 const DB_NAME = 'MusicPlayerDB';
 const DB_VERSION = 1;
-const STORE_NAME = 'playlist'
+const STORE_NAME = 'playlist';
+
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onerror = (event) => {
+            console.error('IndexedDB error:', event.target.error);
+            reject(event.target.error);
+        };
+
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            console.log('IndexedDb initalized successfully');
+            resolve();
+        };
+
+        request.onupgradeneed = (event) => {
+            db = event.target.result;
+
+            if(!db.objectStoreNames.contains(STORE_NAME)) {
+                const store = db.createObjectStore(STORE_NAME, {keyPath: 'id'});
+                console.log('Object store created');
+            }
+        };
+    });
+}
