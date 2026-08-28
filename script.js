@@ -117,3 +117,34 @@ function showNotification(message) {
         notification.classList.remove('show');
     },3000);
 }
+
+async function initPlayer() {
+    try{
+        await initDB();
+
+        const savedPlaylist = await loadPlaylist();
+
+        if(savedPlaylist && savePlaylist.length > 0) {
+            playlist = savedPlaylist;
+
+            playlist.forEach(track => {
+                if(track.src && track.src.startsWith('data')) {
+                    const blob = dataURLtoBlob(track.src);
+                    track.src = URL.createObjectURL(blob);
+                }
+            });
+            renderPlaylist();
+
+            if(playlist.length > 0) { 
+                loadTrack(0);
+            }
+        }
+        showNotification('Playlist loaded from storage!')
+    } catch (error) {
+        console.error('Error initializing player:', error);
+        showNotification('Error loading saved playlist');
+    }
+
+    audio.volume = 0.7;
+    updateVolumeUI();
+}
