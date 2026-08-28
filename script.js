@@ -160,3 +160,49 @@ function dataURLtoBlob(dataURL) {
     }
     return new Blob([u8arr], { type: mime });
 }
+
+function renderPlaylist() {
+    playListEl.innerHTML = '';
+
+    playlist.forEach((track, index)=>{
+        const li = document.createElement('li');
+        li.className = index === currentTrackIndex ?  'active': '';
+
+        const thumbnailSrc = track.thumbnail || 'images/default.jpg';
+
+        li.innerHTML = `
+                    <img class="track-thumbnail" src="${thumbnailSrc}" alt="${track.title}">
+                    <div class="track-details">
+                        <div class="playlist-title">${track.title}</div>
+                        <div class="playlist-artist">${track.artist || 'Unknown Artist'}</div>
+                        ${track.album ? `<div class="playlist-album">${track.album}</div>`: ''}
+                    </div>
+                    <div class="track-duration">${track.duration || '0:00'}</div>
+                    <button class="delete-btn" data-index="${index}">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    `;
+
+                    li.addEventListener('click', (e) => {
+                        if(!e.target.classList.contains('delete-btn') && !e.target.classList.contains('fa-trash')) {
+
+                        
+                            loadTrack(index);
+                            playTrack();
+
+                        }
+                    });
+
+                    playListEl.appendChild(li);
+    });
+
+    tracksCount.textContent = playlist.length;
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const index = parseInt(btn.getAttribute('data-index'));
+            deleteTrack(index);
+        });
+    });
+}
