@@ -206,3 +206,117 @@ function renderPlaylist() {
         });
     });
 }
+
+async function extractMetadata(file, track) {
+    return new Promise((resolve) => {
+        const tempAudio = new Audio();
+        const objectURL = URL.createObjectURL(file);
+        tempAudio.src = objectURL;
+
+        tempAudio.addEventListener('loadedmetadata', () => {
+            track.duration = formatTime(tempAudio.duration);
+
+            const render = new FileReader();
+
+            render.onload = function (e) {
+                try {
+                    const arrayBuffer = e.target.result;
+
+                    const dataView = new DataView(arrayBuffer);
+
+                    const fileName = file.name.replace(/\.[^/.]+$/,"");
+                    const dashIndex = fileName.indexOf(' - ');
+                    const underscoreIndex = fileName.indexOf('_');
+                    const separatorIndex = dashIndex !== -1 ? dashIndex : underscoreIndex;
+
+                    if(separatorIndex !== -1) {
+                        track.artist = fileName.substring(0, separatorIndex).trim();
+                        track.title = fileName.substring(separatorIndex + 3).trim();
+                    } else {
+                        track.title = fileName;
+                    }
+
+                    if(file.type === 'audio/mpeg' || file.name.toLowerCase().endsWith('.mp3')) {
+                        extractAlbumArtFromMP3(arrayBuffer, track);
+                    }
+
+                    resolve(track);
+                } catch (error) {
+                    console.error('Error extracting metadata:', error);
+                    resolve(track);
+                }
+            };
+
+            render.readAsArrayBuffer(file.slice(0, 1024 * 1024));
+
+            setTimeout(() => URL.revokeObjectURL(objectURL), 1000);
+        });
+
+        tempAudio.onerror = () => {
+            console.error('Error loading audio file for metadata extraction');
+            resolve(track);
+        };
+    });
+    
+}
+
+function extractAlbumArtFromMP3(arrayBuffer, track) {
+    try {
+        const dataView = new DataView(arrayBuffer);
+
+        if(dataView.getUint32(0) === 0x49443300) {
+            const id3Size = syncsafeToInt(dataView.getUint32(6));
+
+            let offset = 10;
+
+            while (offset < id3Size + 10) {
+                const frameId = String.fromCharCode(
+                    dataView.getUint8(offset),
+                    dataView.getUint8(offset + 1),
+                    dataView.getUint8(offset + 2),
+                    dataView.getUint8(offset + 3)
+                );
+
+                const frameSize = dataView.getUint32(offset + 4);
+
+                if(frameId === "APIC") {
+                    let pictureOffset = offset + 10;
+
+                    pictureOffset += 1;
+
+                    while (dataView.getUint8(pictureOffset) !== 0 && pictureOffset < offset + frameSize + 10) {
+                        pictureOffset +=1;
+                    }
+                    pictureOffset += 1;
+
+                    while (dataView.getUint8(pictureOffset) !== 0 && pictureOffset < offset + frameSize + 10) {
+                        pictureOffset +=1;
+                    }
+                    pictureOffset += 1;
+
+                    const pictureSize = frameSize - (pictureOffset - offset - 10);
+
+                    if(pictureSize > 0) {
+                        const pictureData = arrayBuffer.slice(pictureOffset, pictureOffset + pictureSize);
+                        const blob = new Blob([pictureData], { type: 'image/jpeg' });
+                        track.thumbnail = URL.createObjectURL(blob);
+                        break;
+                    }
+                }
+
+                offset += 10 + frameSize;
+            }
+        }
+    } catch (error) {
+        console.error('Error extracting album art:', error);
+    }
+}
+
+function syncsafeToInt(syncsafe) { 
+    let result = 0;
+    result = (syncsafe & 0x7F000000) >> 0;
+    result += (syncsafe & 0x007F0000) >> 1;
+    result += (syncsafe & 0x00007F00) >> 2;
+    result += (syncsafe & 0x0000007F) >> 3;
+    return result
+}
