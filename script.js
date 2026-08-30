@@ -5,7 +5,7 @@ const albumImage = document.getElementById('album-image');
 const defaultArt = document.getElementById('default-art');
 const progressBar = document.getElementById('progress-bar');
 const progress = document.getElementById('progress');
-const currentTimeEl =  document.getElementById('current-time');
+const currentTimeEl = document.getElementById('current-time');
 const durationEl = document.getElementById('duration');
 const playPausBtn = document.getElementById('play-pause-btn');
 const playIcon = document.getElementById('play-icon');
@@ -50,8 +50,8 @@ function initDB() {
         request.onupgradeneed = (event) => {
             db = event.target.result;
 
-            if(!db.objectStoreNames.contains(STORE_NAME)) {
-                const store = db.createObjectStore(STORE_NAME, {keyPath: 'id'});
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
                 console.log('Object store created');
             }
         };
@@ -59,8 +59,8 @@ function initDB() {
 }
 
 async function savePlaylist() {
-    if(!db) return;
-    
+    if (!db) return;
+
     return new Promise((resolve, reject) => {
         const transaction = db.transaction([STORE_NAME], 'readwrite');
         const store = transaction.objectStore(STORE_NAME);
@@ -68,7 +68,7 @@ async function savePlaylist() {
         store.clear();
 
         playlist.forEach((track, index) => {
-            if(track.thumbnail && track.thumbnail.startsWith('blob:')){
+            if (track.thumbnail && track.thumbnail.startsWith('blob:')) {
                 delete track.thumbnail;
             }
             store.put(track);
@@ -106,7 +106,7 @@ async function loadPlaylist() {
             reject(event.target.error);
         };
     });
-    
+
 }
 
 function showNotification(message) {
@@ -115,27 +115,27 @@ function showNotification(message) {
 
     setTimeout(() => {
         notification.classList.remove('show');
-    },3000);
+    }, 3000);
 }
 
 async function initPlayer() {
-    try{
+    try {
         await initDB();
 
         const savedPlaylist = await loadPlaylist();
 
-        if(savedPlaylist && savePlaylist.length > 0) {
+        if (savedPlaylist && savePlaylist.length > 0) {
             playlist = savedPlaylist;
 
             playlist.forEach(track => {
-                if(track.src && track.src.startsWith('data')) {
+                if (track.src && track.src.startsWith('data')) {
                     const blob = dataURLtoBlob(track.src);
                     track.src = URL.createObjectURL(blob);
                 }
             });
             renderPlaylist();
 
-            if(playlist.length > 0) { 
+            if (playlist.length > 0) {
                 loadTrack(0);
             }
         }
@@ -164,9 +164,9 @@ function dataURLtoBlob(dataURL) {
 function renderPlaylist() {
     playListEl.innerHTML = '';
 
-    playlist.forEach((track, index)=>{
+    playlist.forEach((track, index) => {
         const li = document.createElement('li');
-        li.className = index === currentTrackIndex ?  'active': '';
+        li.className = index === currentTrackIndex ? 'active' : '';
 
         const thumbnailSrc = track.thumbnail || 'images/default.jpg';
 
@@ -175,7 +175,7 @@ function renderPlaylist() {
                     <div class="track-details">
                         <div class="playlist-title">${track.title}</div>
                         <div class="playlist-artist">${track.artist || 'Unknown Artist'}</div>
-                        ${track.album ? `<div class="playlist-album">${track.album}</div>`: ''}
+                        ${track.album ? `<div class="playlist-album">${track.album}</div>` : ''}
                     </div>
                     <div class="track-duration">${track.duration || '0:00'}</div>
                     <button class="delete-btn" data-index="${index}">
@@ -183,17 +183,17 @@ function renderPlaylist() {
                     </button>
                     `;
 
-                    li.addEventListener('click', (e) => {
-                        if(!e.target.classList.contains('delete-btn') && !e.target.classList.contains('fa-trash')) {
+        li.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('delete-btn') && !e.target.classList.contains('fa-trash')) {
 
-                        
-                            loadTrack(index);
-                            playTrack();
 
-                        }
-                    });
+                loadTrack(index);
+                playTrack();
 
-                    playListEl.appendChild(li);
+            }
+        });
+
+        playListEl.appendChild(li);
     });
 
     tracksCount.textContent = playlist.length;
@@ -224,19 +224,19 @@ async function extractMetadata(file, track) {
 
                     const dataView = new DataView(arrayBuffer);
 
-                    const fileName = file.name.replace(/\.[^/.]+$/,"");
+                    const fileName = file.name.replace(/\.[^/.]+$/, "");
                     const dashIndex = fileName.indexOf(' - ');
                     const underscoreIndex = fileName.indexOf('_');
                     const separatorIndex = dashIndex !== -1 ? dashIndex : underscoreIndex;
 
-                    if(separatorIndex !== -1) {
+                    if (separatorIndex !== -1) {
                         track.artist = fileName.substring(0, separatorIndex).trim();
                         track.title = fileName.substring(separatorIndex + 3).trim();
                     } else {
                         track.title = fileName;
                     }
 
-                    if(file.type === 'audio/mpeg' || file.name.toLowerCase().endsWith('.mp3')) {
+                    if (file.type === 'audio/mpeg' || file.name.toLowerCase().endsWith('.mp3')) {
                         extractAlbumArtFromMP3(arrayBuffer, track);
                     }
 
@@ -257,14 +257,14 @@ async function extractMetadata(file, track) {
             resolve(track);
         };
     });
-    
+
 }
 
 function extractAlbumArtFromMP3(arrayBuffer, track) {
     try {
         const dataView = new DataView(arrayBuffer);
 
-        if(dataView.getUint32(0) === 0x49443300) {
+        if (dataView.getUint32(0) === 0x49443300) {
             const id3Size = syncsafeToInt(dataView.getUint32(6));
 
             let offset = 10;
@@ -279,24 +279,24 @@ function extractAlbumArtFromMP3(arrayBuffer, track) {
 
                 const frameSize = dataView.getUint32(offset + 4);
 
-                if(frameId === "APIC") {
+                if (frameId === "APIC") {
                     let pictureOffset = offset + 10;
 
                     pictureOffset += 1;
 
                     while (dataView.getUint8(pictureOffset) !== 0 && pictureOffset < offset + frameSize + 10) {
-                        pictureOffset +=1;
+                        pictureOffset += 1;
                     }
                     pictureOffset += 1;
 
                     while (dataView.getUint8(pictureOffset) !== 0 && pictureOffset < offset + frameSize + 10) {
-                        pictureOffset +=1;
+                        pictureOffset += 1;
                     }
                     pictureOffset += 1;
 
                     const pictureSize = frameSize - (pictureOffset - offset - 10);
 
-                    if(pictureSize > 0) {
+                    if (pictureSize > 0) {
                         const pictureData = arrayBuffer.slice(pictureOffset, pictureOffset + pictureSize);
                         const blob = new Blob([pictureData], { type: 'image/jpeg' });
                         track.thumbnail = URL.createObjectURL(blob);
@@ -312,11 +312,86 @@ function extractAlbumArtFromMP3(arrayBuffer, track) {
     }
 }
 
-function syncsafeToInt(syncsafe) { 
+function syncsafeToInt(syncsafe) {
     let result = 0;
     result = (syncsafe & 0x7F000000) >> 0;
     result += (syncsafe & 0x007F0000) >> 1;
     result += (syncsafe & 0x00007F00) >> 2;
     result += (syncsafe & 0x0000007F) >> 3;
     return result
+}
+
+function loadTrack(index) {
+    if (index < 0 || index >= playlist.length) return;
+
+    const track = playlist[index];
+    currentTrackIndex = index;
+
+    audio.src = track.src;
+
+    trackTitle.textContent = track.title;
+    trackArtist.textContent = track.artist || 'Unknown Artist';
+    trackAlbum.textContent = track.album || '';
+
+    if (track.thumbnail) {
+        albumImage.src = track.thumbnail;
+        albumImage.classList.add('active');
+        defaultArt.style.display = 'none';
+    } else {
+        albumImage.src = 'images/default.jpg'
+        albumImage.classList.add('active');
+        defaultArt.style.display = 'none';
+    }
+
+    progress.style.width = '0%';
+    currentTimeEl.textContent = '0:00';
+
+    renderPlaylist();
+
+    audio.addEventListener('loadeddata', () => {
+        if(!playlist[index].duration || playlist[index].duration === '0:00') {
+            playlist[index].duration = formatTime(audio.duration);
+        }
+        durationEl.textContent = formatTime(audio.duration);
+    }, {once: true});
+}
+
+async function handleFiles(files) {
+    if (files.length === 0) return;
+
+    showNotification(`Processing ${files.length} file(s)...`);
+
+    for(let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if(!file.type.startsWith('audio/')) {
+            console.log(`"${file.name}" is not valid audio file. Skipping.`);
+            continue;
+        }
+
+        const objectUrl = URL.createObjectURL(file);
+
+        const newTrack = {
+            id: Date.now() + i + Math.random(),
+            title: file.name.replace(/\.[^/.]+$/, ""),
+            artist: 'Unknown Artist',
+            src: objectUrl,
+            fileName: file.name,
+            fileType: file.type,
+            duration: '0:00'
+        };
+        
+        await extractMetadata(file, newTrack);
+
+        playlist.push(newTrack);
+    }
+
+    renderPlaylist();
+    await savePlaylist();
+
+    if(currentTrackIndex === -1 && playlist.length > 0) { 
+        loadTrack(0);
+    }
+
+    showNotification(`Added ${files.length} track(s) to your playlist!`);
 }
