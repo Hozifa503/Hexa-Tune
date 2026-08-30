@@ -338,7 +338,7 @@ function loadTrack(index) {
         albumImage.classList.add('active');
         defaultArt.style.display = 'none';
     } else {
-        albumImage.src = 'images/default.jpg'
+        albumImage.src = 'images/default.thumb.jpg'
         albumImage.classList.add('active');
         defaultArt.style.display = 'none';
     }
