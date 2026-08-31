@@ -512,3 +512,23 @@ function prevTrack() {
     loadTrack(prevIndex);
     playTrack();
 }
+
+function updateProgress() {
+    const { duration, currentTime } = audio;
+    if (isNaN(duration)) return;
+
+    const progressPercent = (currentTime / duration) * 100;
+    progress.style.width = `${progressPercent}%`;
+
+    currentTimeEl.textContent = formatTime(currentTime);
+}
+
+function setProgress(e) {
+    const width = this.clientWidth;
+    const clickX = e.offsetX;
+    const duration = audio.duration;
+
+    if (isNaN(duration)) return;
+
+    audio.currentTime = (clickX / width) * duration;
+}
