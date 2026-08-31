@@ -495,3 +495,20 @@ function pauseTrack() {
     playIcon.className = 'fa-solid fa-play';
     playPauseBtn.style.background = 'linear-gradient(135deg, skyblue, lightgreen)';
 }
+
+function nextTrack() {
+    if (playlist.length === 0) return;
+
+    let nextIndex = (currentTrackIndex + 1) % playlist.length;
+    loadTrack(nextIndex);
+    playTrack();
+}
+
+function prevTrack() {
+    if(playlist.length === 0) return;
+
+    let prevIndex = currentTrackIndex - 1;
+    if (prevIndex < 0) prevIndex = playlist.length - 1;
+    loadTrack(prevIndex);
+    playTrack();
+}
