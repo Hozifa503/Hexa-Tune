@@ -7,7 +7,7 @@ const progressBar = document.getElementById('progress-bar');
 const progress = document.getElementById('progress');
 const currentTimeEl = document.getElementById('current-time');
 const durationEl = document.getElementById('duration');
-const playPausBtn = document.getElementById('play-pause-btn');
+const playPauseBtn = document.getElementById('play-pause-btn');
 const playIcon = document.getElementById('play-icon');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -464,4 +464,34 @@ async function clearAllTracks() {
         await savePlaylist();
         showNotification('Playlist cleared successfully');
     }
+}
+
+function togglePlayPause() {
+    if(!audio.src) return;
+
+    if(isPlaying) {
+        pauseTrack();
+    } else {
+        playTrack();
+    }
+}
+
+function playTrack() {
+    if(!audio.src) return;
+
+    audio.play().then(() => {
+        isPlaying = true;
+        playIcon.className = 'fa-solid fa-pause';
+        playPauseBtn.style.background = 'linear-gradient(135deg, skyblue, lightgreen)';
+    }).catch(error => {
+        console.error('Error playing audio:', error);
+        showNotification('Error playing audio. Please check if the file is vaild');
+    });
+}
+
+function pauseTrack() {
+    audio.pause();
+    isPlaying = false;
+    playIcon.className = 'fa-solid fa-play';
+    playPauseBtn.style.background = 'linear-gradient(135deg, skyblue, lightgreen)';
 }
