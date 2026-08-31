@@ -395,3 +395,73 @@ async function handleFiles(files) {
 
     showNotification(`Added ${files.length} track(s) to your playlist!`);
 }
+
+async function deleteTrack(index) {
+    if(index < 0 || index >= playlist.length) return;
+
+    if(playlist[index].src && playlist[index].src.startsWith('blob:')) {
+        URL.revokeObjectURL(playlist[index].src);
+    }
+
+    if(playlist[index].thumbnail && playlist[index].thumbnail.startsWith('blob:')) {
+        URL.revokeObjectURL(playlist[index].thumbnail);
+    }
+
+    playlist.splice(index, 1);
+
+    if(index === currentTrackIndex) {
+        if(playlist.length > 0) {
+            const newIndex = index < playlist.length ? index: playlist.length - 1;
+            loadTrack(newIndex);
+            if(isPlaying) {
+                playTrack();
+            }
+        } else {
+            currentTrackIndex = -1;
+            audio.src = '';
+            trackTitle.textContent = 'No Track Selected';
+            trackArtist.textContent = 'Upload music files to get started';
+            trackAlbum.textContent = '';
+            albumImage.classList.remove('active');
+            defaultArt.style.display = 'flex';
+            pauseTrack();
+        }
+    } else if (index < currentTrackIndex) {
+        currentTrackIndex--;
+    }
+
+    renderPlaylist();
+    await savePlaylist();
+    showNotification('Track removed from playlist');
+    
+}
+
+async function clearAllTracks() {
+    if (playlist.length === 0) return;
+
+    if(confirm('Are you sure you want to remove all tracks from your playlist? This action can`t be undone.')) {
+        playlist.forEach(track => {
+            if(track.src && track.src.startsWith('blob:')){
+                URL.revokeObjectURL(track.src);
+            }
+            if(track.thumbnail && track.thumbnail.startsWith('blob:')){
+                URL.revokeObjectURL(track.thumbnail);
+            }
+        });
+
+        playlist = [];
+        currentTrackIndex = -1;
+
+        audio.src = '';
+        trackTitle.textContent = 'No Track Selected';
+        trackArtist.textContent = 'Upload music files to get started';
+        trackAlbum.textContent = '';
+        albumImage.classList.remove('active');
+        defaultArt.style.display = 'flex';
+        pauseTrack();
+
+        renderPlaylist();
+        await savePlaylist();
+        showNotification('Playlist cleared successfully');
+    }
+}
