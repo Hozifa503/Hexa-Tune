@@ -563,3 +563,18 @@ function setVolume(e) {
     audio.volume = Math.max(0, Math.min(1, volume));
     updateVolumeUI();
 }
+
+uploadBtn.addEventListener('click', () => {
+    fileInput.click();
+});
+
+uploadArea.addEventListener('click', () => {
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFiles(e.target.files);
+        fileInput.value = '';
+    }
+});
