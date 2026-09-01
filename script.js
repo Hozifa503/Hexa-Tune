@@ -578,3 +578,31 @@ fileInput.addEventListener('change', (e) => {
         fileInput.value = '';
     }
 });
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    uploadArea.style.borderColor = 'lightgreen';
+    uploadArea.style.background = 'rgba(0, 255, 154, 0.15)';
+});
+
+uploadArea.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    uploadArea.style.borderColor = 'rgba(0, 154, 255, 0.5)';
+    uploadArea.style.background = 'rgba(0, 154, 255, 0.05)';
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    uploadArea.style.borderColor = 'rgba(0, 154, 255, 0.5)';
+    uploadArea.style.background = 'rgba(0, 154, 255, 0.05)';
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFiles(files);
+    }
+});
+
+clearBtn.addEventListener('click', clearAllTracks);
