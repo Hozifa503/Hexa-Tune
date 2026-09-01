@@ -540,3 +540,26 @@ function formatTime(seconds) {
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
 }
+
+function updateVolumeUI() {
+    const volume = audio.volume;
+    volumePercent.style.width = `${volume * 100}%`;
+
+    const volumeIcon = document.querySelector('.volume-icon i');
+    if (volume === 0) {
+        volumeIcon.className = 'fa-solid fa-volume-xmark';
+    } else if (volume < 0.5) {
+        volumeIcon.className = 'fa-solid fa-volume-low';
+    } else {
+        volumeIcon.className = 'fa-solid fa-volume-high'
+    }
+}
+
+function setVolume(e) {
+    const width = this.clientWidth;
+    const clickX = e.offsetX;
+    const volume = clickX / width;
+
+    audio.volume = Math.max(0, Math.min(1, volume));
+    updateVolumeUI();
+}
