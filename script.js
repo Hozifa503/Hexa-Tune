@@ -98,7 +98,7 @@ async function loadPlaylist() {
         request.onsuccess = (event) => {
             const savedPlaylist = event.target.result;
             console.log(`Loaded ${savedPlaylist.length} tracks from IndexedDB`);
-            resolve(savePlaylist);
+            resolve(savedPlaylist);
         };
 
         request.onerror = (event) => {
@@ -124,7 +124,7 @@ async function initPlayer() {
 
         const savedPlaylist = await loadPlaylist();
 
-        if (savedPlaylist && savePlaylist.length > 0) {
+        if (savedPlaylist && savedPlaylist.length > 0) {
             playlist = savedPlaylist;
 
             playlist.forEach(track => {
@@ -209,55 +209,57 @@ function renderPlaylist() {
 
 async function extractMetadata(file, track) {
     return new Promise((resolve) => {
-        const tempAudio = new Audio();
-        const objectURL = URL.createObjectURL(file);
-        tempAudio.src = objectURL;
+        // استخدام مكتبة jsmediatags لقراءة بيانات الأغنية والصورة بkفاءة عالية
+        jsmediatags.read(file, {
+            onSuccess: function(tag) {
+                const tags = tag.tags;
+                
+                // استخراج العنوان والفنان لو متوفرين في الـ Tags
+                if (tags.title) track.title = tags.title;
+                if (tags.artist) track.artist = tags.artist;
+                if (tags.album) track.album = tags.album;
 
-        tempAudio.addEventListener('loadedmetadata', () => {
-            track.duration = formatTime(tempAudio.duration);
-
-            const render = new FileReader();
-
-            render.onload = function (e) {
-                try {
-                    const arrayBuffer = e.target.result;
-
-                    const dataView = new DataView(arrayBuffer);
-
-                    const fileName = file.name.replace(/\.[^/.]+$/, "");
-                    const dashIndex = fileName.indexOf(' - ');
-                    const underscoreIndex = fileName.indexOf('_');
-                    const separatorIndex = dashIndex !== -1 ? dashIndex : underscoreIndex;
-
-                    if (separatorIndex !== -1) {
-                        track.artist = fileName.substring(0, separatorIndex).trim();
-                        track.title = fileName.substring(separatorIndex + 3).trim();
-                    } else {
-                        track.title = fileName;
+                // استخراج صورة الغلاف (Album Art) لو موجودة
+                if (tags.picture) {
+                    const data = tags.picture.data;
+                    const format = tags.picture.format;
+                    let base64String = "";
+                    for (let i = 0; i < data.length; i++) {
+                        base64String += String.fromCharCode(data[i]);
                     }
-
-                    if (file.type === 'audio/mpeg' || file.name.toLowerCase().endsWith('.mp3')) {
-                        extractAlbumArtFromMP3(arrayBuffer, track);
-                    }
-
-                    resolve(track);
-                } catch (error) {
-                    console.error('Error extracting metadata:', error);
-                    resolve(track);
+                    const base64 = window.btoa(base64String);
+                    const blob = dataURLtoBlob(`data:${format};base64,${base64}`);
+                    track.thumbnail = URL.createObjectURL(blob);
                 }
-            };
 
-            render.readAsArrayBuffer(file.slice(0, 1024 * 1024));
-
-            setTimeout(() => URL.revokeObjectURL(objectURL), 1000);
+                // حساب مدة الأغنية
+                const tempAudio = new Audio();
+                const objectURL = URL.createObjectURL(file);
+                tempAudio.src = objectURL;
+                tempAudio.addEventListener('loadedmetadata', () => {
+                    track.duration = formatTime(tempAudio.duration);
+                    URL.revokeObjectURL(objectURL);
+                    resolve(track);
+                });
+                tempAudio.onerror = () => {
+                    track.duration = '0:00';
+                    resolve(track);
+                };
+            },
+            onError: function(error) {
+                console.log("No tags found or error reading tags:", error);
+                // لو الملف ملوش tags، هنكتفي باسم الملف والمدة العادية
+                const tempAudio = new Audio();
+                const objectURL = URL.createObjectURL(file);
+                tempAudio.src = objectURL;
+                tempAudio.addEventListener('loadedmetadata', () => {
+                    track.duration = formatTime(tempAudio.duration);
+                    URL.revokeObjectURL(objectURL);
+                    resolve(track);
+                });
+            }
         });
-
-        tempAudio.onerror = () => {
-            console.error('Error loading audio file for metadata extraction');
-            resolve(track);
-        };
     });
-
 }
 
 function extractAlbumArtFromMP3(arrayBuffer, track) {
@@ -485,7 +487,7 @@ function playTrack() {
         playPauseBtn.style.background = 'linear-gradient(135deg, skyblue, lightgreen)';
     }).catch(error => {
         console.error('Error playing audio:', error);
-        showNotification('Error playing audio. Please check if the file is vaild');
+        showNotification('Error playing audio. Please check if the file is valid');
     });
 }
 
@@ -637,13 +639,20 @@ document.addEventListener('keydown', (e) => {
 
 });
 
+playPauseBtn.addEventListener('click', togglePlayPause);
+audio.addEventListener('timeupdate', updateProgress);
+progressBar.addEventListener('click', setProgress);
+volumeSlider.addEventListener('click', setVolume);
+nextBtn.addEventListener('click', nextTrack);
+prevBtn.addEventListener('click', prevTrack);
+
 initPlayer();
 
 window.addEventListener('beforeunload', async () => {
     try {
         await savePlaylist();
     } catch (error) {
-        console.error('Error daving playlist before unload:', error);
+        console.error('Error saving playlist before unload:', error);
     }
 });
 
@@ -651,4 +660,4 @@ setInterval(async () => {
     if (playlist.length > 0) {
         await savePlaylist();
     }
-}), 30000;
+}, 30000);
