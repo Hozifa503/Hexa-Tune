@@ -606,3 +606,33 @@ uploadArea.addEventListener('drop', (e) => {
 });
 
 clearBtn.addEventListener('click', clearAllTracks);
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        togglePlayPause();
+    }
+
+    if (e.code === 'ArrowRight' && e.ctrlKey) {
+        e.preventDefault();
+        nextTrack();
+    }
+
+    if (e.code === 'ArrowLeft' && e.ctrlKey) {
+        e.preventDefault();
+        prevTrack();
+    }
+    if (e.code === 'ArrowUp' && e.ctrlKey) {
+        e.preventDefault();
+        audio.volume = Math.min(1, audio.volume + 0.1);
+        updateVolumeUI();
+
+    }
+
+    if (e.code === 'ArrowDown' && e.ctrlKey) {
+        e.preventDefault();
+        audio.volume = Math.max(0, audio.volume - 0.1);
+        updateVolumeUI();
+    }
+
+});
