@@ -636,3 +636,19 @@ document.addEventListener('keydown', (e) => {
     }
 
 });
+
+initPlayer();
+
+window.addEventListener('beforeunload', async () => {
+    try {
+        await savePlaylist();
+    } catch (error) {
+        console.error('Error daving playlist before unload:', error);
+    }
+});
+
+setInterval(async () => {
+    if (playlist.length > 0) {
+        await savePlaylist();
+    }
+}), 30000;
