@@ -28,7 +28,7 @@ let currentTrackIndex = -1;
 let playlist = [];
 
 let db;
-const DB_NAME = 'MusicPlayerDB';
+const DB_NAME = 'HexaTuneDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'playlist';
 
@@ -36,23 +36,17 @@ function initDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-        request.onerror = (event) => {
-            console.error('IndexedDB error:', event.target.error);
-            reject(event.target.error);
-        };
+        request.onerror = (event) => reject(event.target.error);
 
         request.onsuccess = (event) => {
             db = event.target.result;
-            console.log('IndexedDb initalized successfully');
             resolve();
         };
 
-        request.onupgradeneed = (event) => {
+        request.onupgradeneeded = (event) => {
             db = event.target.result;
-
             if (!db.objectStoreNames.contains(STORE_NAME)) {
-                const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                console.log('Object store created');
+                db.createObjectStore(STORE_NAME, { keyPath: 'id' });
             }
         };
     });
@@ -67,11 +61,17 @@ async function savePlaylist() {
 
         store.clear();
 
-        playlist.forEach((track, index) => {
-            if (track.thumbnail && track.thumbnail.startsWith('blob:')) {
-                delete track.thumbnail;
-            }
-            store.put(track);
+        playlist.forEach((track) => {
+            const trackToStore = {
+                id: track.id,
+                title: track.title,
+                artist: track.artist,
+                album: track.album,
+                duration: track.duration,
+                file: track.file,
+                coverBlob: track.coverBlob || null
+            };
+            store.put(trackToStore);
         });
 
         transaction.oncomplete = () => {
@@ -96,13 +96,10 @@ async function loadPlaylist() {
         const request = store.getAll();
 
         request.onsuccess = (event) => {
-            const savedPlaylist = event.target.result;
-            console.log(`Loaded ${savedPlaylist.length} tracks from IndexedDB`);
-            resolve(savedPlaylist);
+            resolve(event.target.result);
         };
 
         request.onerror = (event) => {
-            console.error('Error loading playlist:', event.target.error);
             reject(event.target.error);
         };
     });
@@ -110,7 +107,7 @@ async function loadPlaylist() {
 }
 
 function showNotification(message) {
-    notification.textContent = message;
+    notificationText.textContent = message;
     notification.classList.add('show');
 
     setTimeout(() => {
@@ -125,24 +122,19 @@ async function initPlayer() {
         const savedPlaylist = await loadPlaylist();
 
         if (savedPlaylist && savedPlaylist.length > 0) {
-            playlist = savedPlaylist;
+            playlist = savedPlaylist.map(track => ({
+                ...track,
+                src: track.file ? URL.createObjectURL(track.file) : '',
+                thumbnail: track.coverBlob ? URL.createObjectURL(track.coverBlob) : null
+            }));
 
-            playlist.forEach(track => {
-                if (track.src && track.src.startsWith('data')) {
-                    const blob = dataURLtoBlob(track.src);
-                    track.src = URL.createObjectURL(blob);
-                }
-            });
             renderPlaylist();
-
-            if (playlist.length > 0) {
-                loadTrack(0);
-            }
+            loadTrack(0);
+            showNotification(`Restored ${playlist.length} track(s)`);
+            
         }
-        showNotification('Playlist loaded from storage!')
     } catch (error) {
         console.error('Error initializing player:', error);
-        showNotification('Error loading saved playlist');
     }
 
     audio.volume = 0.7;
@@ -229,6 +221,7 @@ async function extractMetadata(file, track) {
                     }
                     const base64 = window.btoa(base64String);
                     const blob = dataURLtoBlob(`data:${format};base64,${base64}`);
+                    track.coverBlob = blob;
                     track.thumbnail = URL.createObjectURL(blob);
                 }
 
@@ -377,9 +370,9 @@ async function handleFiles(files) {
             id: Date.now() + i + Math.random(),
             title: file.name.replace(/\.[^/.]+$/, ""),
             artist: 'Unknown Artist',
+            album: '',
+            file: file,
             src: objectUrl,
-            fileName: file.name,
-            fileType: file.type,
             duration: '0:00'
         };
         
@@ -566,7 +559,8 @@ function setVolume(e) {
     updateVolumeUI();
 }
 
-uploadBtn.addEventListener('click', () => {
+uploadBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     fileInput.click();
 });
 
