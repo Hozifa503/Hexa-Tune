@@ -333,7 +333,7 @@ h1{
 
 .plaaylist::-webkit-scrollbar-track{
     border-radius: 10px;
-    background: rgba(255, 255, 255, alpha)0.05;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .playlist::-webkit-scrollbar-thumb{
@@ -372,7 +372,7 @@ h1{
     flex-shrink: 0;
 }
 
-.track-detail {
+.track-details {
     flex: 1;
     max-width: 0;
     margin-right: 15px;
