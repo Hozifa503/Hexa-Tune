@@ -5,8 +5,8 @@ It lets you upload, play, and organize your favourite songs in your browser.
 Hexa Tune designed for music lovers who have old laptops, and want to enjoy their music without slowing down their device.
 
 ## Photos
-<img width="1432" height="805" alt="Screenshot 2026-09-02 075656" src="https://github.com/user-attachments/assets/a36be5a5-35e3-43ec-a01d-9cc60e58ea57" />
-<img width="1440" height="823" alt="Screenshot 2026-09-05 183453" src="https://github.com/user-attachments/assets/d8e3b4c0-bec3-49c7-a36f-cc466af87efe" />
+![first](image.png)
+![second](image-1.png)
 
 
 ## Features
@@ -14,6 +14,10 @@ Hexa Tune designed for music lovers who have old laptops, and want to enjoy thei
 * **Drag & drop Upload:** You can easily drag and drop your local audio files to the player
 * **Auto Matadata Extraction:** The player Automatically reads track titles, artist, and album art using `jsmediatags`.
 * **Keyboard Shortcuts:** Control the Playback (Play/Pause, skip, volume) with your keyboard.
+
+* **Playback Controls:** include Shuffle mode, repeat you fav track of Hamo Elmorshedy, quick mute Button.
+
+* **Presistant Local Storage:** Saves audio files and extraccted album art blos directly in `IndexDB` so you can play your playlist without adding the music again
 
 
 ## Built With
