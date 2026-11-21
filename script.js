@@ -483,7 +483,6 @@ function playTrack() {
     audio.play().then(() => {
         isPlaying = true;
         playIcon.className = 'fa-solid fa-pause';
-        playPauseBtn.style.background = 'linear-gradient(135deg, skyblue, lightgreen)';
     }).catch(error => {
         console.error('Error playing audio:', error);
         showNotification('Error playing audio. Please check if the file is valid');
@@ -494,7 +493,6 @@ function pauseTrack() {
     audio.pause();
     isPlaying = false;
     playIcon.className = 'fa-solid fa-play';
-    playPauseBtn.style.background = 'linear-gradient(135deg, skyblue, lightgreen)';
 }
 
 function nextTrack() {
