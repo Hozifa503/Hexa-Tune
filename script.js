@@ -21,11 +21,17 @@ const playListEl = document.getElementById('playlist');
 const tracksCount = document.getElementById('tracks-count');
 const notification = document.getElementById('notification');
 const notificationText = document.getElementById('notification-text');
+const shuffleBtn = document.getElementById('shuffle-btn');
+const repeatBtn = document.getElementById('repeat-btn');
+const muteBtn = document.getElementById('mute-btn');
 
 const audio = new Audio();
 let isPlaying = false;
 let currentTrackIndex = -1;
 let playlist = [];
+let isShuffle = false;
+let isRepeat = false;
+let lastVolume = 0.7;
 
 let db;
 const DB_NAME = 'HexaTuneDB';
@@ -494,10 +500,48 @@ function pauseTrack() {
 function nextTrack() {
     if (playlist.length === 0) return;
 
-    let nextIndex = (currentTrackIndex + 1) % playlist.length;
+    let nextIndex;
+    if (isShuffle && playlist.length > 1) {
+        do {
+            nextIndex = Math.floor(Math.random() * playlist.length);
+        } while (nextIndex === currentTrackIndex);
+    } else {
+        nextIndex = (currentTrackIndex + 1) % playlist.length;
+    }
     loadTrack(nextIndex);
     playTrack();
 }
+
+audio.addEventListener('ended', () => {
+    if (isRepeat) {
+        audio.currentTime = 0;
+        playTrack();
+    } else {
+        nextTrack();
+    }
+});
+
+shuffleBtn.addEventListener('click', () => {
+    isShuffle = !isShuffle;
+    shuffleBtn.classList.toggle('active-mode', isShuffle);
+    showNotification(isShuffle ? 'Shuffle enabled' : 'Shuffle disabled');
+});
+
+repeatBtn.addEventListener('click', () => {
+    isRepeat = !isRepeat;
+    repeatBtn.classList.toggle('active-mode', isRepeat);
+    showNotification(isRepeat ? 'Repeat on enabled' : 'Repeat disabled');
+});
+
+muteBtn.addEventListener('click', () => {
+    if (audio.volume > 0) {
+        lastVolume = audio.volume;
+        audio.volume = 0;
+    } else {
+        audio.volume = lastVolume;
+    }
+    updateVolumeUI();
+});
 
 function prevTrack() {
     if(playlist.length === 0) return;

@@ -178,6 +178,19 @@ h1{
     align-items: center;
 }
 
+.secondary-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
+    opacity: 0.75;
+}
+
+.secondary-btn.active-mode {
+    opacity:1;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
 .play-pause {
     background: linear-gradient(135deg, skyblue, lightgreen);
     font-size: 2rem;
@@ -198,6 +211,7 @@ h1{
 .volume-icon {
     font-size: 1.5rem;
     color: lightblue;
+    cursor: pointer;
 }
 
 .volume-slider {
