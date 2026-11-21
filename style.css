@@ -111,7 +111,7 @@ h1{
     font-size: 1.8rem;
     margin-bottom: 5px;
     color: skyblue;
-    white-space: nowarp;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -331,7 +331,7 @@ h1{
     width: 8px;
 }
 
-.plaaylist::-webkit-scrollbar-track{
+.playlist::-webkit-scrollbar-track{
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
 }
